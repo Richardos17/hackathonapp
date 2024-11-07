@@ -1,7 +1,7 @@
 // pages/signup.js
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './api/auth/firebaseClient'; // Import your Firebase auth setup
+import { auth } from './api/firebaseClient'; // Import your Firebase auth setup
 
 export default function SignUp() {
   const [email, setEmail] = useState('');

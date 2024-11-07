@@ -1,12 +1,15 @@
 // pages/index.js
-
-import { db, auth, GoogleAuthProvider , signInWithPopup } from './api/auth/firebaseClient';
+'use client'
+ 
+import { useRouter } from 'next/navigation'
+import { db, auth, GoogleAuthProvider , signInWithPopup } from './api/firebaseClient';
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { collection, getDocs } from "firebase/firestore";
 import Link from 'next/link';
 
 export default function Home() {
+  const router = useRouter()
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -36,7 +39,7 @@ export default function Home() {
       const user = result.user;
       console.log('Google sign-in successful:', user);
       // Redirect user to dashboard or home page after successful sign-in
-      window.location.href = '/dashboard'; // Adjust this as needed
+      router.push("booking")
     } catch (err) {
       setError(err.message);
       console.error('Google sign-in error:', err.message);
