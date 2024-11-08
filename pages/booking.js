@@ -8,8 +8,7 @@ import { collection, getDocs, addDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import TimePicker from "react-time-picker";
-
+import Link from "next/link.js";
 export default function Booking() {
   const user = useAuthState();
   const router = useRouter();
@@ -17,13 +16,13 @@ export default function Booking() {
   const [events, setEvents] = useState([]);
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(60);
   const [cost, setCost] = useState(0);
   console.log(user);
   if (!user) {
     //router.push("signin");
   }
-  const costPerMinute = 0.25;
+  const costPerMinute = 0.1;
 
   const fetchEvents = async () => {
     const querySnapshot = await getDocs(collection(db, "reservations"));
@@ -38,9 +37,9 @@ export default function Booking() {
   const setStart = async (info) => {
     const startTime = new Date(info.dateStr);
     setStartDateTime(startTime.toISOString().slice(0, 16));
-    setEndDateTime("");
-    setDuration(0);
-    setCost(0);
+    setStartDateTime(startTime);
+    setDuration(60);
+    calculateEndDateTime(startTime, 60)
   };
   const sendBooking = async () => {
     await addDoc(collection(db, "reservations"), {
@@ -65,14 +64,13 @@ export default function Booking() {
   };
   const handleStartDateTimeChange = (e) => {
     setStartDateTime(e);
-    setEndDateTime("");
-    setDuration(0);
-    setCost(0);
+    setDuration(60);
+    calculateEndDateTime(e, 60)
   };
   const handleDurationChange = (e) => {
-    console.log(e);
-    setDuration(e);
-    calculateEndDateTime(startDateTime, e);
+    console.log(e.target.value);
+    setDuration(e.target.value);
+    calculateEndDateTime(startDateTime, e.target.value);
   };
   const handleEndDateTimeChange = (e) => {
     setEndDateTime(e);
@@ -86,8 +84,14 @@ export default function Booking() {
     const localEndDateTime = endTime
       .toLocaleString("sv-SE", { timeZoneName: "short" })
       .slice(0, 16);
-    setEndDateTime(localEndDateTime);
+    setEndDateTime(endTime);
     setCost(minutes * costPerMinute);
+  };
+  const handleKeyDown = (event) => {
+    // Prevent all keystrokes except for arrow keys
+    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
+      event.preventDefault();
+    }
   };
   const calculateReservation = (start, end) => {
     if (!start || !end) return;
@@ -161,17 +165,15 @@ export default function Booking() {
           <label htmlFor="duration" className="form-label">
             Duration (minutes)
           </label>
-          <TimePicker
-            onChange={handleDurationChange}
-            value={duration}
-            disableClock={true}
-            format="HH:mm"
-            minTime="00:10"
-            className="form-control"
-            maxTime="23:50"
-            step={10} // This ensures 10-minute increments
-            disabled={!startDateTime}
-          />
+          <input
+        type="number"
+        value={duration}
+        onChange={handleDurationChange}
+        min={10}
+        onKeyDown={handleKeyDown}
+        className="form-control"
+        step={10} // This enables 10-minute intervals
+      />
           <div>
             <p>Selected Duration: {duration}</p>
           </div>
@@ -186,6 +188,7 @@ export default function Booking() {
             readOnly
           />
         </div>
+        <Link href="checkout">Checkout</Link>
       </form>
     </div>
   );

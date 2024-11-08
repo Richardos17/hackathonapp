@@ -13,6 +13,8 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@stripe/react-stripe-js": "^2.8.1",
+    "@stripe/stripe-js": "^4.9.0",
     "bootstrap": "^5.3.3",
     "firebase": "^11.0.1",
     "googleapis": "^144.0.0",
@@ -21,7 +23,8 @@
     "react": "^18.3.1",
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
-    "react-time-picker": "^7.0.0"
+    "react-time-picker": "^7.0.0",
+    "stripe": "^17.3.1"
   },
   "devDependencies": {
     "eslint": "^8",
