@@ -8,7 +8,7 @@ export default function Home() {
     <div>
       <Link href="signin">Sign in</Link>
       <LightingControl/>
-    
+      <QrReader/>
     </div>
   );
 }
