@@ -1,6 +1,7 @@
 // pages/index.js
 import Calendar from "./components/calendar.js";
 import { useAuthState } from "./api/auth/authState.js";
+import { useAuth } from "./api/auth/authContext.js";
 import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { db } from "./api/firebaseClient";
@@ -10,25 +11,29 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Link from "next/link.js";
 export default function Booking() {
-  const user = useAuthState();
+  const user = useAuth();
   const router = useRouter();
+  useEffect(() => {
+    if (!user) {
+      router.push("/signin");
+    }
+  }, [user, router]); // Run only when `user` or `router` changes
 
-  const [events, setEvents] = useState([]);
+  if (!user) {
+    return null; // Optionally, show a loading indicator while redirecting
+  }  const [events, setEvents] = useState([]);
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
   const [duration, setDuration] = useState(60);
   const [cost, setCost] = useState(0);
-  console.log(user);
-  if (!user) {
-    //router.push("signin");
-  }
+
   const costPerMinute = 0.1;
 
   const fetchEvents = async () => {
     const querySnapshot = await getDocs(collection(db, "reservations"));
     const fetchedEvents = querySnapshot.docs.map((doc) => ({
       id: doc.id,
-      title: "Reserved",
+      title: doc.data().user == user.uid ? "My reservation" : "Reserved",
       start: doc.data().start.toDate(),
       end: doc.data().end.toDate(),
     }));
@@ -39,13 +44,13 @@ export default function Booking() {
     setStartDateTime(startTime.toISOString().slice(0, 16));
     setStartDateTime(startTime);
     setDuration(60);
-    calculateEndDateTime(startTime, 60)
+    calculateEndDateTime(startTime, 60);
   };
   const sendBooking = async () => {
     await addDoc(collection(db, "reservations"), {
-      title: user.uid,
-      start: startTime,
-      end: endTime,
+      user: user.uid,
+      start: startDateTime,
+      end: endDateTime,
     });
     fetchEvents();
   };
@@ -65,7 +70,7 @@ export default function Booking() {
   const handleStartDateTimeChange = (e) => {
     setStartDateTime(e);
     setDuration(60);
-    calculateEndDateTime(e, 60)
+    calculateEndDateTime(e, 60);
   };
   const handleDurationChange = (e) => {
     console.log(e.target.value);
@@ -89,7 +94,7 @@ export default function Booking() {
   };
   const handleKeyDown = (event) => {
     // Prevent all keystrokes except for arrow keys
-    if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") {
       event.preventDefault();
     }
   };
@@ -166,14 +171,14 @@ export default function Booking() {
             Duration (minutes)
           </label>
           <input
-        type="number"
-        value={duration}
-        onChange={handleDurationChange}
-        min={10}
-        onKeyDown={handleKeyDown}
-        className="form-control"
-        step={10} // This enables 10-minute intervals
-      />
+            type="number"
+            value={duration}
+            onChange={handleDurationChange}
+            min={10}
+            onKeyDown={handleKeyDown}
+            className="form-control"
+            step={10} // This enables 10-minute intervals
+          />
           <div>
             <p>Selected Duration: {duration}</p>
           </div>
@@ -188,7 +193,14 @@ export default function Booking() {
             readOnly
           />
         </div>
-        <Link href="checkout">Checkout</Link>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={sendBooking}
+        >
+          Submit
+        </button>
+        
       </form>
     </div>
   );
