@@ -15,7 +15,7 @@ Okrem toho môžu používatelia nahrať sťažnosti, ak je niečo poškodené n
   - **Leaflet** - na zobrazenie mapy
   - **React Datepicker** - na UI výber dátumu
   - **ZXing/library** - na skenovanie QR kódov
-- **MQTT** - na komunikáciu s ihriskom a svetlami cez Next.js. Na strane hardvéru bude ESP32 prijímať tieto signály cez `.ino` súbor.
+- **MQTT** - na komunikáciu s ihriskom a svetlami. Na strane hardvéru bude ESP32 prijímať tieto signály. https://wokwi.com/projects/414204292551207937
 - **Bootstrap** - na dizajn UI
 
 
