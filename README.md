@@ -1,40 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Rezervačný systém športovísk
 
-## Getting Started
+Tento program obsahuje základné funkcie a komponenty(bez dizajnu), ktoré sú predprípravou na komplexný systém, v ktorom sa používatelia môžu prihlásiť a vykonať rezerváciu na vybrané športovisko na konkrétny čas a dátum. Po úspešnej rezervácii, ak používateľ naskenuje QR kód alebo zadá kód ihriska, sa automaticky otvoria dvere a počas noci sa zapnú svetlá.
 
-First, run the development server:
+Okrem toho môžu používatelia nahrať sťažnosti, ak je niečo poškodené na športovisku.
 
-```bash
+## Použité technológie
+
+- **Next.js** - na vytvorenie frontend aplikácie
+- **Firebase Authentication** - na prihlasovanie používateľov
+- **Firebase Firestore** - na ukladanie dát o používateľoch a rezerváciách
+- **React** knižnice:
+  - **FullCalendar** - na zobrazenie rezervácií v kalendári
+  - **Stripe** - na realizáciu platieb
+  - **Leaflet** - na zobrazenie mapy
+  - **React Datepicker** - na UI výber dátumu
+  - **ZXing/library** - na skenovanie QR kódov
+- **MQTT** - na komunikáciu s ihriskom a svetlami. Na strane hardvéru bude ESP32 prijímať tieto signály. https://wokwi.com/projects/414204292551207937
+- **Bootstrap** - na dizajn UI
+
+
+## Inštalácia
+
+
+1. Klonujte tento repozitár:
+git clone https://github.com/Richardos17/hackathonapp.git
+
+
+2. Prejdite do priečinka projektu:
+cd hackathonapp
+
+
+3. Nainštalujte závislosti:
+npm install
+
+
+4. Spustite aplikáciu:
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+5. Aplikácia bude dostupná na `http://localhost:3000`.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
