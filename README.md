@@ -1,6 +1,6 @@
 # Rezervačný systém športovísk
 
-Tento program obsahuje základné funkcie a komponenty, ktoré sú predprípravou na komplexný systém, v ktorom sa používatelia môžu prihlásiť a vykonať rezerváciu na vybrané športovisko na konkrétny čas a dátum. Po úspešnej rezervácii, ak používateľ naskenuje QR kód alebo zadá kód ihriska, sa automaticky otvoria dvere a počas noci sa zapnú svetlá.
+Tento program obsahuje základné funkcie a komponenty(bez dizajnu), ktoré sú predprípravou na komplexný systém, v ktorom sa používatelia môžu prihlásiť a vykonať rezerváciu na vybrané športovisko na konkrétny čas a dátum. Po úspešnej rezervácii, ak používateľ naskenuje QR kód alebo zadá kód ihriska, sa automaticky otvoria dvere a počas noci sa zapnú svetlá.
 
 Okrem toho môžu používatelia nahrať sťažnosti, ak je niečo poškodené na športovisku.
 
