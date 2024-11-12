@@ -10,16 +10,32 @@ const LightingControl = () => {
     const mqttClient = mqtt.connect(
       "wss://3293aac8404344178826c86d38a69c49.s1.eu.hivemq.cloud:8884/mqtt",
       {
+        protocol: "wss",
         username: "Richard", // ak je potrebné
-        password: "Richard1234", // ak je potrebné
+        password: "Richard1234", // ak je potrebné// ak je potrebné
       }
     ); // Používame WebSocket pripojenie
     setClient(mqttClient);
-
+    // Listen for messages on the topic
+    
     mqttClient.on("connect", () => {
       console.log("MQTT pripojený");
     });
+    mqttClient.subscribe("sports/facility/lighting", (err) => {
+      if (err) {
+        console.error("Subscription error:", err);
+      } else {
+        console.log("Subscribed to sports/facility/lighting for confirmation");
+      }
+    });
+    mqttClient.on("message", (topic, message) => {
+      console.log("Received message:", message);
 
+      if (topic === "sports/facility/lighting") {
+        const receivedMessage = message.toString();
+        console.log("Received message:", receivedMessage);
+      }
+    });
     mqttClient.on("error", (err) => {
       console.error("MQTT chyba:", err);
       mqttClient.end();
