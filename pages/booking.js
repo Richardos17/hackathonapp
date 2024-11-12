@@ -1,11 +1,11 @@
 // pages/index.js
 import Calendar from "./components/calendar.js";
-import { useAuthState } from "./api/auth/authState.js";
+import { useSearchParams } from 'next/navigation'
 import { useAuth } from "./api/auth/authContext.js";
 import { useRouter } from "next/navigation";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { db } from "./api/firebaseClient";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, getDoc, addDoc, doc } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,15 +13,22 @@ import Link from "next/link.js";
 export default function Booking() {
   const user = useAuth();
   const router = useRouter();
+  const location_id = useSearchParams().get("location_id")
+
   useEffect(() => {
     if (!user) {
-      router.push("/signin");
+       router.push("/signin");
     }
   }, [user, router]); // Run only when `user` or `router` changes
 
-  if (!user) {
-    return null; // Optionally, show a loading indicator while redirecting
-  }  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    if (!user) {
+       router.push("/signin");
+    }
+    fetchEvents();
+
+  }, []);
+  const [events, setEvents] = useState([]);
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
   const [duration, setDuration] = useState(60);
@@ -30,14 +37,32 @@ export default function Booking() {
   const costPerMinute = 0.1;
 
   const fetchEvents = async () => {
-    const querySnapshot = await getDocs(collection(db, "reservations"));
-    const fetchedEvents = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      title: doc.data().user == user.uid ? "My reservation" : "Reserved",
-      start: doc.data().start.toDate(),
-      end: doc.data().end.toDate(),
-    }));
-    setEvents(fetchedEvents);
+    try {
+      // Step 1: Get a reference to the `reservations` sub-collection for the specified `field_id`
+      const reservationsCollectionRef = collection(
+        db,
+        "fields",
+        location_id,
+        "reservations"
+      );
+
+      // Step 2: Fetch all documents in the `reservations` sub-collection
+      const reservationsSnapshot = await getDocs(reservationsCollectionRef);
+
+      // Step 3: Process each document in the snapshot
+      const reservations = reservationsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+       // user: doc.data().user == user.uid ? "My reservation" : "Reserved",
+        start: doc.data().start.toDate(),
+        end: doc.data().end.toDate(),
+      }));
+      setEvents(reservations)
+      return reservations;
+    } catch (error) {
+      console.error("Error fetching reservations:", error);
+    }
+
+  
   };
   const setStart = async (info) => {
     const startTime = new Date(info.dateStr);
@@ -114,9 +139,7 @@ export default function Booking() {
       setCost(0);
     }
   };
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+  
   const timeOptions = generateTimeOptions();
 
   return (
@@ -193,14 +216,9 @@ export default function Booking() {
             readOnly
           />
         </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          onClick={sendBooking}
-        >
+        <button type="button" className="btn btn-primary" onClick={sendBooking}>
           Submit
         </button>
-        
       </form>
     </div>
   );

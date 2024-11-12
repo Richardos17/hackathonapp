@@ -2,13 +2,14 @@
 import { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from './api/firebaseClient'; // Import your Firebase auth setup
-
+import { useRouter } from 'next/router';
 export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const router = useRouter()
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -21,7 +22,7 @@ export default function SignUp() {
       console.log('User signed up:', userCredential.user);
       setSuccess(true);
       // Redirect to login or dashboard page after successful sign-up
-      window.location.href = '/signin'; // You can change this as needed
+       router.back() // You can change this as needed
     } catch (err) {
       setError(err.message);
       console.error('Error signing up:', err.message);
